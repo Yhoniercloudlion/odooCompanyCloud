@@ -9,8 +9,11 @@ class ResUsers(models.Model):
     def signup(self, values, token=None):
         """
         Sobrescribir el método signup para asignar automáticamente la compañía
-        basada en la ubicación geográfica del usuario
+        basada en la ubicación geográfica del usuario y asignar grupo portal
         """
+        # Asignar grupo portal por defecto
+        values['groups_id'] = [(6, 0, [self.env.ref('base.group_portal').id])]
+        
         # Ejecutar el signup original
         result = super(ResUsers, self).signup(values, token)
         
@@ -51,6 +54,11 @@ class ResUsers(models.Model):
         """
         Sobrescribir create para asignación automática durante creación programática
         """
+        # Asignar grupo portal por defecto a todos los usuarios nuevos
+        for vals in vals_list:
+            if request and request.httprequest.path.startswith('/web/signup'):
+                vals['groups_id'] = [(6, 0, [self.env.ref('base.group_portal').id])]
+            
         users = super(ResUsers, self).create(vals_list)
         
         for user, vals in zip(users, vals_list):
@@ -58,7 +66,7 @@ class ResUsers(models.Model):
             state_id = vals.get('state_id') 
             city = vals.get('city')
             
-            # Solo asignar si viene del website (no desde backend)
+            # Solo asignar si viene del website
             if country_id and request and request.httprequest.path.startswith('/web/signup'):
                 company = self.env['res.company'].find_company_by_location(
                     country_id=country_id,

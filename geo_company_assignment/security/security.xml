@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Regla de registro para permitir acceso a todos los registros -->
+    <record id="rule_all_company_records" model="ir.rule">
+        <field name="name">Acceso a registros de todas las compañías</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Reglas de acceso para usuarios del portal -->
+    <record id="portal_company_rule" model="ir.rule">
+        <field name="name">Portal: Acceso a información de compañías</field>
+        <field name="model_id" ref="base.model_res_company"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="portal_partner_rule" model="ir.rule">
+        <field name="name">Portal: Acceso a su propio contacto</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[('id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo> 

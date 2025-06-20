@@ -14,6 +14,7 @@
     'website': 'https://www.tuempresa.com',
     'depends': ['base', 'website'],
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
         'views/res_company_views.xml',
         'data/company_locations_data.xml',
