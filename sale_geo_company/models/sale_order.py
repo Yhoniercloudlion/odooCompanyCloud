@@ -18,18 +18,13 @@ class SaleOrder(models.Model):
         )
 
         if company:
-            # Log para seguimiento
-            self.env['ir.logging'].sudo().create({
-                'name': 'sale_geo_company',
-                'type': 'server',
-                'level': 'INFO',
-                'message': f'Venta {self.name} asignada a compañía {company.name} basado en ubicación del cliente: '
-                          f'{self.partner_id.country_id.name}, '
-                          f'{self.partner_id.state_id.name if self.partner_id.state_id else ""}, '
-                          f'{self.partner_id.city or ""}',
-                'path': 'sale_geo_company',
-                'func': '_get_geographic_company'
-            })
+            # Log simplificado para seguimiento
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.info(f'Venta {self.name} asignada a compañía {company.name} basado en ubicación del cliente: '
+                        f'{self.partner_id.country_id.name}, '
+                        f'{self.partner_id.state_id.name if self.partner_id.state_id else ""}, '
+                        f'{self.partner_id.city or ""}')
             return company
         return False
 

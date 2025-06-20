@@ -27,6 +27,7 @@
         'views/res_company_views.xml',
         'views/sale_order_views.xml',
         'data/manual_data_load.xml',
+        'data/user_access.xml',
     ],
     'demo': [
         'data/demo_companies.xml',
