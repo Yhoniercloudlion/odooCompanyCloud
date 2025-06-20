@@ -1,0 +1,33 @@
+{
+    'name': 'Asignación Geográfica de Compañías',
+    'version': '18.0.1.0.0',
+    'category': 'Sales',
+    'summary': 'Asigna automáticamente compañías a usuarios y ventas basado en ubicación geográfica',
+    'description': """
+        Este módulo permite:
+        - Asignar automáticamente la compañía más adecuada a las órdenes de venta basado en la ubicación del cliente
+        - Sistema de prioridades para múltiples coincidencias geográficas
+        - Configuración de áreas de servicio por compañía (países, estados, ciudades)
+        
+        Flujo de trabajo:
+        1. Usuario se registra en website → se asigna a compañía del website (permanente)
+        2. Usuario actualiza su dirección → mantiene la misma compañía
+        3. Orden de venta se crea → se asigna automáticamente la compañía más cercana al cliente
+    """,
+    'author': 'Tu Empresa',
+    'website': 'https://www.tuempresa.com',
+    'license': 'LGPL-3',
+    'depends': [
+        'base',
+        'sale_management',
+        'website'
+    ],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/res_company_views.xml',
+        'views/sale_order_views.xml',
+    ],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+} 
