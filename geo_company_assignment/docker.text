@@ -1,4 +1,0 @@
-
-cd C:\Users\YHONIER\Desktop\ONE\custom\addons
-
-docker cp ./geo_company_assignment fd9522420736:/mnt/extra-addons/
