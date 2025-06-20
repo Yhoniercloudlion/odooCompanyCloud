@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Países de referencia -->
+    <data noupdate="1">
+        
+        <!-- Compañía Madrid -->
+        <record id="company_madrid" model="res.company">
+            <field name="name">Compañía Madrid</field>
+            <field name="email">madrid@ejemplo.com</field>
+            <field name="phone">+34 91 123 4567</field>
+            <field name="street">Calle Gran Vía 123</field>
+            <field name="city">Madrid</field>
+            <field name="zip">28013</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_m"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">5</field>
+            <field name="geo_cities">Madrid, Alcalá de Henares, Getafe, Móstoles, Fuenlabrada, Leganés</field>
+        </record>
+        
+        <!-- Asignar países y estados a Compañía Madrid -->
+        <record id="madrid_country_rel" model="res.company">
+            <field name="id" ref="company_madrid"/>
+            <field name="geo_country_ids" eval="[(4, ref('base.es'))]"/>
+        </record>
+        
+        <record id="madrid_state_rel" model="res.company">
+            <field name="id" ref="company_madrid"/>
+            <field name="geo_state_ids" eval="[(4, ref('base.state_es_m'))]"/>
+        </record>
+
+        <!-- Compañía Barcelona -->
+        <record id="company_barcelona" model="res.company">
+            <field name="name">Compañía Barcelona</field>
+            <field name="email">barcelona@ejemplo.com</field>
+            <field name="phone">+34 93 123 4567</field>
+            <field name="street">Passeig de Gràcia 456</field>
+            <field name="city">Barcelona</field>
+            <field name="zip">08008</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_b"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">5</field>
+            <field name="geo_cities">Barcelona, Hospitalet de Llobregat, Badalona, Terrassa, Sabadell</field>
+        </record>
+        
+        <!-- Asignar países y estados a Compañía Barcelona -->
+        <record id="barcelona_country_rel" model="res.company">
+            <field name="id" ref="company_barcelona"/>
+            <field name="geo_country_ids" eval="[(4, ref('base.es'))]"/>
+        </record>
+        
+        <record id="barcelona_state_rel" model="res.company">
+            <field name="id" ref="company_barcelona"/>
+            <field name="geo_state_ids" eval="[(4, ref('base.state_es_b'))]"/>
+        </record>
+
+        <!-- Compañía Valencia -->
+        <record id="company_valencia" model="res.company">
+            <field name="name">Compañía Valencia</field>
+            <field name="email">valencia@ejemplo.com</field>
+            <field name="phone">+34 96 123 4567</field>
+            <field name="street">Calle Colón 789</field>
+            <field name="city">Valencia</field>
+            <field name="zip">46004</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_v"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">6</field>
+            <field name="geo_cities">Valencia, Alicante, Castelló de la Plana, Elche, Gandía</field>
+        </record>
+        
+        <!-- Asignar países y estados a Compañía Valencia -->
+        <record id="valencia_country_rel" model="res.company">
+            <field name="id" ref="company_valencia"/>
+            <field name="geo_country_ids" eval="[(4, ref('base.es'))]"/>
+        </record>
+        
+        <record id="valencia_state_rel" model="res.company">
+            <field name="id" ref="company_valencia"/>
+            <field name="geo_state_ids" eval="[(4, ref('base.state_es_v'))]"/>
+        </record>
+
+        <!-- Compañía España General (cobertura nacional) -->
+        <record id="company_spain_general" model="res.company">
+            <field name="name">España General</field>
+            <field name="email">general@ejemplo.com</field>
+            <field name="phone">+34 91 999 0000</field>
+            <field name="street">Avenida de la Constitución 1</field>
+            <field name="city">Madrid</field>
+            <field name="zip">28001</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">10</field>
+            <!-- Sin ciudades ni estados específicos = cobertura nacional -->
+        </record>
+        
+        <!-- Asignar solo país a España General -->
+        <record id="spain_general_country_rel" model="res.company">
+            <field name="id" ref="company_spain_general"/>
+            <field name="geo_country_ids" eval="[(4, ref('base.es'))]"/>
+        </record>
+
+        <!-- Compañía Internacional (ejemplo para otros países) -->
+        <record id="company_international" model="res.company">
+            <field name="name">Internacional Corp</field>
+            <field name="email">international@ejemplo.com</field>
+            <field name="phone">+1 555 123 4567</field>
+            <field name="street">123 International Ave</field>
+            <field name="city">New York</field>
+            <field name="zip">10001</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="currency_id" ref="base.USD"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">8</field>
+            <field name="geo_cities">New York, Los Angeles, Chicago, Miami, San Francisco</field>
+        </record>
+        
+        <!-- Asignar países a Internacional -->
+        <record id="international_country_rel" model="res.company">
+            <field name="id" ref="company_international"/>
+            <field name="geo_country_ids" eval="[(4, ref('base.us')), (4, ref('base.ca')), (4, ref('base.mx'))]"/>
+        </record>
+
+    </data>
+</odoo> 

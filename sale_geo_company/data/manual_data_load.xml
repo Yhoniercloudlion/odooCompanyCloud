@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Datos que se cargan siempre (no solo en modo demo) -->
+    <data noupdate="0">
+        
+        <!-- Compañía Madrid -->
+        <record id="company_madrid_manual" model="res.company">
+            <field name="name">Compañía Madrid</field>
+            <field name="email">madrid@ejemplo.com</field>
+            <field name="phone">+34 91 123 4567</field>
+            <field name="street">Calle Gran Vía 123</field>
+            <field name="city">Madrid</field>
+            <field name="zip">28013</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_m"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">5</field>
+            <field name="geo_cities">Madrid, Alcalá de Henares, Getafe, Móstoles, Fuenlabrada, Leganés</field>
+            <field name="geo_country_ids" eval="[(6, 0, [ref('base.es')])]"/>
+            <field name="geo_state_ids" eval="[(6, 0, [ref('base.state_es_m')])]"/>
+        </record>
+
+        <!-- Compañía Barcelona -->
+        <record id="company_barcelona_manual" model="res.company">
+            <field name="name">Compañía Barcelona</field>
+            <field name="email">barcelona@ejemplo.com</field>
+            <field name="phone">+34 93 123 4567</field>
+            <field name="street">Passeig de Gràcia 456</field>
+            <field name="city">Barcelona</field>
+            <field name="zip">08008</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_b"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">5</field>
+            <field name="geo_cities">Barcelona, Hospitalet de Llobregat, Badalona, Terrassa, Sabadell</field>
+            <field name="geo_country_ids" eval="[(6, 0, [ref('base.es')])]"/>
+            <field name="geo_state_ids" eval="[(6, 0, [ref('base.state_es_b')])]"/>
+        </record>
+
+        <!-- España General (cobertura nacional) -->
+        <record id="company_spain_general_manual" model="res.company">
+            <field name="name">España General</field>
+            <field name="email">general@ejemplo.com</field>
+            <field name="phone">+34 91 999 0000</field>
+            <field name="street">Avenida de la Constitución 1</field>
+            <field name="city">Madrid</field>
+            <field name="zip">28001</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="currency_id" ref="base.EUR"/>
+            <!-- Configuración geográfica -->
+            <field name="geo_assignment_enabled">True</field>
+            <field name="geo_priority">10</field>
+            <field name="geo_country_ids" eval="[(6, 0, [ref('base.es')])]"/>
+            <!-- Sin ciudades ni estados específicos = cobertura nacional -->
+        </record>
+
+        <!-- Clientes de prueba -->
+        <record id="partner_madrid_manual" model="res.partner">
+            <field name="name">Juan Pérez Madrid</field>
+            <field name="email">juan.madrid@ejemplo.com</field>
+            <field name="phone">+34 91 555 0001</field>
+            <field name="street">Calle Alcalá 100</field>
+            <field name="city">Madrid</field>
+            <field name="zip">28009</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_m"/>
+            <field name="is_company">False</field>
+        </record>
+
+        <record id="partner_barcelona_manual" model="res.partner">
+            <field name="name">Ana García Barcelona</field>
+            <field name="email">ana.barcelona@ejemplo.com</field>
+            <field name="phone">+34 93 555 0002</field>
+            <field name="street">Ramblas 200</field>
+            <field name="city">Barcelona</field>
+            <field name="zip">08002</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_b"/>
+            <field name="is_company">False</field>
+        </record>
+
+        <record id="partner_sevilla_manual" model="res.partner">
+            <field name="name">María Rodríguez Sevilla</field>
+            <field name="email">maria.sevilla@ejemplo.com</field>
+            <field name="phone">+34 95 555 0004</field>
+            <field name="street">Calle Sierpes 50</field>
+            <field name="city">Sevilla</field>
+            <field name="zip">41001</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="state_id" ref="base.state_es_se"/>
+            <field name="is_company">False</field>
+        </record>
+
+    </data>
+</odoo> 

@@ -26,6 +26,11 @@
         'security/ir.model.access.csv',
         'views/res_company_views.xml',
         'views/sale_order_views.xml',
+        'data/manual_data_load.xml',
+    ],
+    'demo': [
+        'data/demo_companies.xml',
+        'data/demo_partners.xml',
     ],
     'installable': True,
     'auto_install': False,
