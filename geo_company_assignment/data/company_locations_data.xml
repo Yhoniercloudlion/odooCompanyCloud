@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Ejemplo de configuración de compañías con ubicaciones -->
+        
+        <!-- Compañía para España -->
+        <record id="company_spain_example" model="res.company">
+            <field name="name">Mi Empresa España</field>
+            <field name="is_geographic_assignment">True</field>
+            <field name="assignment_priority">5</field>
+            <field name="service_cities">Madrid, Barcelona, Valencia, Sevilla, Bilbao</field>
+            <field name="service_country_ids" eval="[(4, ref('base.es'))]"/>
+        </record>
+        
+        <!-- Compañía para México -->
+        <record id="company_mexico_example" model="res.company">
+            <field name="name">Mi Empresa México</field>
+            <field name="is_geographic_assignment">True</field>
+            <field name="assignment_priority">10</field>
+            <field name="service_cities">Ciudad de México, Guadalajara, Monterrey, Puebla, Tijuana</field>
+            <field name="service_country_ids" eval="[(4, ref('base.mx'))]"/>
+        </record>
+        
+        <!-- Compañía para Colombia -->
+        <record id="company_colombia_example" model="res.company">
+            <field name="name">Mi Empresa Colombia</field>
+            <field name="is_geographic_assignment">True</field>
+            <field name="assignment_priority">15</field>
+            <field name="service_cities">Bogotá, Medellín, Cali, Barranquilla, Cartagena</field>
+            <field name="service_country_ids" eval="[(4, ref('base.co'))]"/>
+        </record>
+        
+    </data>
+</odoo> 
