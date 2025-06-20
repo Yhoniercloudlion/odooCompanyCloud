@@ -12,6 +12,7 @@
     """,
     'author': 'Tu Empresa',
     'website': 'https://www.tuempresa.com',
+    'license': 'LGPL-3',
     'depends': ['base', 'website'],
     'data': [
         'security/security.xml',

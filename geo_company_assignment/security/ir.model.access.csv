@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_res_company_geo,res.company.geo,base.model_res_company,base.group_user,1,0,0,0
 access_res_company_geo_manager,res.company.geo.manager,base.model_res_company,base.group_system,1,1,1,1
+access_portal_attachment,ir.attachment portal,base.model_ir_attachment,base.group_portal,1,0,0,0
