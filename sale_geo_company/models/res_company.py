@@ -37,6 +37,63 @@ class ResCompany(models.Model):
         help='Lista de ciudades separadas por comas (ej: Madrid, Barcelona, Valencia)'
     )
 
+    @api.model
+    def test_geographic_assignment(self, country_name='España', state_name='Madrid', city_name='Madrid'):
+        """Método de prueba para diagnosticar problemas de asignación geográfica"""
+        
+        _logger.info("=" * 80)
+        _logger.info("🧪 INICIANDO DIAGNÓSTICO DE ASIGNACIÓN GEOGRÁFICA")
+        _logger.info("=" * 80)
+        
+        # 1. Buscar país
+        country = self.env['res.country'].search([('name', 'ilike', country_name)], limit=1)
+        if not country:
+            _logger.error(f"❌ País '{country_name}' no encontrado")
+            return False
+        _logger.info(f"✅ País encontrado: {country.name} (ID: {country.id})")
+        
+        # 2. Buscar estado
+        state = False
+        if state_name:
+            state = self.env['res.country.state'].search([
+                ('country_id', '=', country.id),
+                ('name', 'ilike', state_name)
+            ], limit=1)
+            if state:
+                _logger.info(f"✅ Estado encontrado: {state.name} (ID: {state.id})")
+            else:
+                _logger.warning(f"⚠️  Estado '{state_name}' no encontrado")
+        
+        # 3. Verificar compañías configuradas
+        companies = self.search([('geo_assignment_enabled', '=', True)])
+        _logger.info(f"📊 Compañías con asignación geográfica activa: {len(companies)}")
+        
+        for company in companies:
+            _logger.info(f"  🏢 {company.name}:")
+            _logger.info(f"     - Países: {', '.join(company.geo_country_ids.mapped('name'))}")
+            _logger.info(f"     - Estados: {', '.join(company.geo_state_ids.mapped('name')) if company.geo_state_ids else 'Todos'}")
+            _logger.info(f"     - Ciudades: {company.geo_cities or 'Todas'}")
+            _logger.info(f"     - Prioridad: {company.geo_priority}")
+        
+        # 4. Probar el algoritmo
+        _logger.info(f"\n🎯 Probando algoritmo para: {city_name}, {state_name}, {country_name}")
+        result = self.find_company_by_location(
+            country_id=country.id,
+            state_id=state.id if state else None,
+            city=city_name
+        )
+        
+        if result:
+            _logger.info(f"🎉 RESULTADO: {result.name}")
+        else:
+            _logger.error("❌ RESULTADO: Ninguna compañía encontrada")
+        
+        _logger.info("=" * 80)
+        _logger.info("🏁 DIAGNÓSTICO COMPLETADO")
+        _logger.info("=" * 80)
+        
+        return result
+
     def find_company_by_location(self, country_id=None, state_id=None, city=None):
         """
         Encuentra la compañía más adecuada basada en ubicación geográfica

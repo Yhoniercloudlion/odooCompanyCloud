@@ -19,6 +19,44 @@ class ResPartner(models.Model):
                 
         return partners
 
+    def write(self, vals):
+        """Override write para detectar cambios de ubicación y reasignar compañía en órdenes"""
+        result = super().write(vals)
+        
+        # Verificar si se actualizaron datos de ubicación
+        location_fields = ['country_id', 'state_id', 'city']
+        if any(field in vals for field in location_fields):
+            self._check_geographic_reassignment()
+                
+        return result
+
+    def _check_geographic_reassignment(self):
+        """Verificar si hay órdenes de venta que necesiten reasignación geográfica"""
+        
+        for partner in self:
+            # Buscar órdenes de venta activas de este partner
+            orders = self.env['sale.order'].search([
+                ('partner_id', '=', partner.id),
+                ('state', 'in', ['draft', 'sent'])  # Solo órdenes no confirmadas
+            ])
+            
+            for order in orders:
+                try:
+                    # Intentar reasignar compañía basada en nueva ubicación
+                    company = order._get_geographic_company()
+                    if company and company != order.company_id:
+                        _logger.info(f"=== Reasignando orden {order.name} de {order.company_id.name} a {company.name} por cambio en partner {partner.name}")
+                        
+                        order.sudo().write({'company_id': company.id})
+                        order._ensure_partner_company_compatibility(company)
+                        
+                        order.message_post(
+                            body=f"Compañía reasignada automáticamente a {company.name} por actualización de ubicación del cliente"
+                        )
+                        
+                except Exception as e:
+                    _logger.error(f"=== Error reasignando orden {order.name}: {e}")
+
     def _is_website_partner(self, partner):
         """Determinar si un partner fue creado desde el website"""
         # Indicadores de que es un partner del website:

@@ -8,11 +8,29 @@ _logger = logging.getLogger(__name__)
 
 class WebsiteSaleGeoCompany(WebsiteSale):
 
+    @http.route(['/shop/checkout'], type='http', auth="public", website=True, sitemap=False)
+    def shop_checkout(self, **post):
+        """Interceptar el checkout principal para capturar datos de envío"""
+        
+        _logger.info(f"=== SHOP CHECKOUT: Datos recibidos: {post}")
+        
+        # Ejecutar el checkout original
+        response = super().shop_checkout(**post)
+        
+        # Obtener la orden actual
+        order = request.website.sale_get_order()
+        
+        if order:
+            _logger.info(f"=== Orden en shop_checkout: {order.name}")
+            self._try_assign_geographic_company(order, post)
+                    
+        return response
+
     @http.route()
     def checkout(self, **post):
         """Extender el checkout para capturar datos de envío y asignar compañía automáticamente"""
         
-        _logger.info(f"=== CHECKOUT GEO COMPANY: Datos recibidos: {list(post.keys())}")
+        _logger.info(f"=== CHECKOUT GEO COMPANY: Datos recibidos: {post}")
         
         # Marcar contexto para identificar partners del website
         context = dict(request.env.context)
@@ -40,7 +58,7 @@ class WebsiteSaleGeoCompany(WebsiteSale):
     def address(self, **kw):
         """Capturar también en la página de dirección"""
         
-        _logger.info(f"=== ADDRESS GEO COMPANY: Datos recibidos: {list(kw.keys())}")
+        _logger.info(f"=== ADDRESS GEO COMPANY: Datos recibidos: {kw}")
         
         # Marcar contexto para identificar partners del website
         context = dict(request.env.context)
@@ -62,10 +80,31 @@ class WebsiteSaleGeoCompany(WebsiteSale):
                     
         return response
 
+    @http.route(['/shop/address'], type='http', auth="public", website=True, sitemap=False)
+    def shop_address(self, **kw):
+        """Interceptar específicamente la página de dirección"""
+        
+        _logger.info(f"=== SHOP ADDRESS: Datos recibidos: {kw}")
+        
+        # Ejecutar el método original
+        response = super().address(**kw)
+        
+        # Obtener la orden actual
+        order = request.website.sale_get_order()
+        
+        if order:
+            _logger.info(f"=== Orden en shop_address: {order.name}")
+            self._try_assign_geographic_company(order, kw)
+                    
+        return response
+
     def _try_assign_geographic_company(self, order, post_data):
         """Intentar asignar compañía geográfica basada en los datos disponibles"""
         
         try:
+            # Refrescar la orden para obtener datos actualizados
+            order.invalidate_recordset()
+            
             # Capturar datos de diferentes fuentes posibles
             country_id = self._extract_country_id(post_data, order)
             state_id = self._extract_state_id(post_data, order)
@@ -73,11 +112,20 @@ class WebsiteSaleGeoCompany(WebsiteSale):
             
             _logger.info(f"=== Datos extraídos: País={country_id}, Estado={state_id}, Ciudad={city}")
             
+            # Si no tenemos datos de POST, intentar obtener del partner actualizado
+            if not country_id and order.partner_id:
+                order.partner_id.invalidate_recordset()
+                if order.partner_id.country_id:
+                    country_id = order.partner_id.country_id.id
+                    state_id = order.partner_id.state_id.id if order.partner_id.state_id else None
+                    city = order.partner_id.city
+                    _logger.info(f"=== Datos del partner actualizado: País={country_id}, Estado={state_id}, Ciudad={city}")
+            
             # Si tenemos al menos el país, intentar asignar
             if country_id:
                 self._assign_company_to_order(order, country_id, state_id, city, post_data)
             else:
-                _logger.warning("=== No se pudo extraer country_id de los datos")
+                _logger.warning("=== No se pudo extraer country_id de los datos ni del partner")
                 
         except Exception as e:
             _logger.error(f"=== Error en _try_assign_geographic_company: {e}")
@@ -202,13 +250,17 @@ class WebsiteSaleGeoCompany(WebsiteSale):
     def shop_payment_validate(self, **post):
         """Extender validación de pago para asegurar compatibilidad de empresas"""
         
-        _logger.info("=== SHOP PAYMENT VALIDATE: Verificando compatibilidad de empresas")
+        _logger.info(f"=== SHOP PAYMENT VALIDATE: Datos recibidos: {post}")
         
         # Obtener la orden actual
         order = request.website.sale_get_order()
         
         if order:
             try:
+                # ÚLTIMO INTENTO: Asignar compañía geográfica antes del pago
+                _logger.info(f"=== ÚLTIMO INTENTO de asignación geográfica para orden {order.name}")
+                self._try_assign_geographic_company(order, post)
+                
                 # Asegurar que el usuario del partner tenga acceso a todas las compañías
                 self._ensure_user_company_access(order)
                 

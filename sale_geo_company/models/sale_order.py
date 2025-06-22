@@ -171,16 +171,61 @@ class SaleOrder(models.Model):
             }
         }
 
+    def write(self, vals):
+        """Override write para detectar cambios en partner y reasignar compañía"""
+        result = super().write(vals)
+        
+        # Si se cambió el partner, verificar si necesita reasignación geográfica
+        if 'partner_id' in vals:
+            for order in self:
+                if order.state in ['draft', 'sent']:  # Solo órdenes no confirmadas
+                    company = order._get_geographic_company()
+                    if company and company != order.company_id:
+                        _logger.info(f"=== Reasignando orden {order.name} por cambio de partner")
+                        order.company_id = company
+                        order._ensure_partner_company_compatibility(company)
+        
+        return result
+
     @api.model_create_multi
     def create(self, vals_list):
         """Asignar compañía automáticamente al crear orden"""
         orders = super().create(vals_list)
         for order in orders:
-            if not order.company_id:
-                company = order._get_geographic_company()
-                if company:
-                    _logger.info(f"=== Asignando compañía {company.name} a nueva orden {order.name}")
-                    order.company_id = company
-                    # Asegurar compatibilidad de empresa en los partners
-                    order._ensure_partner_company_compatibility(company)
-        return orders 
+            # Intentar asignación geográfica siempre, no solo si no tiene compañía
+            company = order._get_geographic_company()
+            if company and company != order.company_id:
+                _logger.info(f"=== Asignando compañía {company.name} a nueva orden {order.name}")
+                order.company_id = company
+                # Asegurar compatibilidad de empresa en los partners
+                order._ensure_partner_company_compatibility(company)
+        return orders
+
+    def force_geographic_assignment(self):
+        """Método para forzar reasignación geográfica manual"""
+        self.ensure_one()
+        
+        if self.state not in ['draft', 'sent']:
+            raise UserError(_('Solo se puede reasignar compañía en órdenes en borrador o enviadas.'))
+        
+        company = self._get_geographic_company()
+        if company:
+            old_company = self.company_id.name
+            self.company_id = company
+            self._ensure_partner_company_compatibility(company)
+            
+            self.message_post(
+                body=f"Compañía reasignada manualmente de '{old_company}' a '{company.name}'"
+            )
+            
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': f'Orden reasignada a {company.name}',
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+        else:
+            raise UserError(_('No se encontró una compañía adecuada para la ubicación del cliente.')) 
