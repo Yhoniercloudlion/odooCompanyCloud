@@ -58,7 +58,7 @@
 
     <menuitem id="menu_company_geo_config"
               name="Asignación Geográfica"
-              parent="base.menu_administration"
+              parent="base.menu_users"
               action="action_company_geo_config"
               groups="base.group_system"
               sequence="50"/>

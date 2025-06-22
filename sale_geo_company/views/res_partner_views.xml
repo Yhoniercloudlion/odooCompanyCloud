@@ -32,7 +32,7 @@
     <!-- Menú para la acción de corrección masiva de partners -->
     <menuitem id="menu_fix_partners_multicompany"
               name="Corregir Partners Website Multi-Compañía"
-              parent="base.menu_administration"
+              parent="base.menu_users"
               action="action_fix_website_partners"
               groups="base.group_system"
               sequence="100"/>
