@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Vista formulario extendida para órdenes de venta -->
     <record id="view_order_form_inherit_sale_geo_company" model="ir.ui.view">
         <field name="name">sale.order.form.inherit.geo.company</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <!-- Botones para asignación -->
             <button name="action_confirm" position="before">
                 <button name="assign_geographic_company" 
                         string="Asignar Compañía por Ubicación" 
                         type="object" 
                         class="oe_highlight"
-                        invisible="state != 'draft'"
+                        invisible="state in ('done', 'cancel')"
                         groups="sales_team.group_sale_salesman"/>
+                <button name="debug_geographic_assignment" 
+                        string="🔍 Debug Asignación" 
+                        type="object" 
+                        class="btn-secondary"
+                        groups="sales_team.group_sale_manager"/>
             </button>
+            
+            <!-- Información de datos de envío del website -->
+            <field name="partner_id" position="after">
+                <field name="delivery_country_id" readonly="1" invisible="not delivery_country_id"/>
+                <field name="delivery_state_id" readonly="1" invisible="not delivery_state_id"/>
+                <field name="delivery_city" readonly="1" invisible="not delivery_city"/>
+            </field>
         </field>
     </record>
+    
 </odoo> 

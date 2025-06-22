@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista formulario extendida para partners -->
+    <record id="view_partner_form_inherit_sale_geo_company" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.geo.company</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Botón para configurar multicompañía en un partner individual -->
+            <div class="oe_button_box" position="inside">
+                <button name="ensure_multicompany_compatibility" 
+                        string="Configurar Multi-Compañía" 
+                        type="object" 
+                        class="oe_stat_button btn-secondary"
+                        groups="base.group_system"
+                        help="Configurar este partner para compatibilidad con todas las compañías"
+                        invisible="is_company"
+                        icon="fa-building-o"/>
+            </div>
+        </field>
+    </record>
+
+    <!-- Acción de servidor para corregir todos los partners del website -->
+    <record id="action_fix_website_partners" model="ir.actions.server">
+        <field name="name">Corregir Partners Website - Multi-Compañía</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = model.fix_all_website_partners()</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <!-- Menú para la acción de corrección masiva de partners -->
+    <menuitem id="menu_fix_partners_multicompany"
+              name="Corregir Partners Website Multi-Compañía"
+              parent="base.menu_administration"
+              action="action_fix_website_partners"
+              groups="base.group_system"
+              sequence="100"/>
+
+    <!-- Vista tree extendida para mostrar info de compañía -->
+    <record id="view_partner_tree_inherit_sale_geo_company" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherit.geo.company</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <!-- Agregar columna para mostrar restricción de compañía -->
+            <field name="email" position="after">
+                <field name="company_id" string="Restricción Compañía" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo> 

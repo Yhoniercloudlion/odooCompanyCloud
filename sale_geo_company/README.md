@@ -2,15 +2,15 @@
 
 ## Descripción
 
-Este módulo implementa un sistema de asignación automática de compañías basado en la ubicación geográfica de usuarios y clientes.
+Este módulo implementa un sistema de asignación automática de compañías basado en la ubicación geográfica, **usando los campos existentes del checkout del website**.
 
 ## Flujo de Funcionamiento
 
-1. **Registro de Usuario**: Cuando un usuario se registra desde un website, se le asigna la compañía propietaria de ese website y **mantiene esa compañía permanentemente**.
+1. **Órdenes de Venta Manuales**: Al crear una orden, se asigna automáticamente la compañía más cercana según la ubicación del cliente.
 
-2. **Actualización de Dirección**: Cuando el usuario actualiza su dirección, **mantiene la misma compañía** (no se reasigna).
+2. **🆕 Checkout del Website**: Cuando un cliente realiza una compra desde el website y completa los **datos de envío existentes** (país, provincia, ciudad), se asigna automáticamente la compañía más cercana a esa ubicación **solo a la orden de venta**.
 
-3. **Órdenes de Venta**: Al crear una orden de venta, se asigna automáticamente la **compañía más cercana** según la ubicación del cliente (independiente de la compañía del usuario).
+3. **El cliente NO cambia de compañía** - solo la orden de venta se asigna geográficamente.
 
 ## Configuración
 
@@ -32,7 +32,7 @@ Este módulo implementa un sistema de asignación automática de compañías bas
 - Ciudades: Madrid, Alcalá de Henares, Getafe
 - Prioridad: 5
 
-**Compañía España General:**
+**España General:**
 - Países: España
 - Estados: (vacío - sirve toda España)
 - Ciudades: (vacío)
@@ -47,23 +47,36 @@ El algoritmo asigna puntuaciones basadas en coincidencias:
 
 En caso de empate, gana la compañía con menor **Prioridad de Asignación**.
 
-## Funcionalidades Técnicas
+## Funcionamiento en Website
 
-- **Usuarios mantienen su compañía original** (no se reasignan automáticamente)
-- **Asignación automática en órdenes de venta** según ubicación del cliente
-- **Botón manual** para reasignar compañía en órdenes de venta
-- **Sistema de logs** para auditoría de asignaciones
-- **Configuración flexible** de áreas geográficas por compañía
+### **Proceso Automático:**
+1. Cliente va al checkout del website
+2. Completa los **campos de envío existentes** (país, provincia, ciudad)
+3. **Automáticamente** se asigna la compañía más cercana a la orden
+4. El cliente continúa con el pago normalmente
+5. La orden queda asignada a la compañía correcta
+
+### **No hay cambios visuales** en el website - todo funciona transparentemente en segundo plano.
+
+## Funcionalidades
+
+- ✅ **Asignación automática** en órdenes del website
+- ✅ **Asignación automática** en órdenes manuales
+- ✅ **Botón manual** para reasignar compañía
+- ✅ **Sistema de logs** para auditoría
+- ✅ **Configuración flexible** por compañía
+- ✅ **NO modifica** la experiencia del usuario en el website
 
 ## Instalación
 
-1. Instalar el módulo desde **Aplicaciones**
-2. Configurar las compañías según se indica arriba
-3. El sistema funcionará automáticamente
+1. **Instalar eCommerce** (website_sale) si no está instalado
+2. **Instalar** el módulo "Asignación Geográfica de Compañías"
+3. **Configurar** las compañías según se indica arriba
+4. **¡Funciona automáticamente!**
 
 ## Compatibilidad
 
 - ✅ Odoo 18.0
 - ✅ Multi-compañía
-- ✅ Website
-- ✅ Ventas 
+- ✅ Website Sale (eCommerce)
+- ✅ Sin modificaciones al frontend del website 

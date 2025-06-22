@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista formulario extendida para usuarios -->
+    <record id="view_users_form_inherit_sale_geo_company" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.geo.company</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <!-- Botón para asignar todas las compañías a un usuario individual -->
+            <button name="action_reset_password" position="after">
+                <button name="assign_all_companies" 
+                        string="Asignar Todas las Compañías" 
+                        type="object" 
+                        class="btn-secondary"
+                        groups="base.group_system"
+                        help="Asignar todas las compañías activas a este usuario"/>
+            </button>
+        </field>
+    </record>
+
+    <!-- Acción de servidor para corregir todos los usuarios -->
+    <record id="action_fix_all_users_companies" model="ir.actions.server">
+        <field name="name">Corregir Usuarios - Asignar Todas las Compañías</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">action = model.fix_all_existing_users()</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <!-- Menú para la acción de corrección masiva -->
+    <menuitem id="menu_fix_users_companies"
+              name="Corregir Usuarios Multi-Compañía"
+              parent="base.menu_users"
+              action="action_fix_all_users_companies"
+              groups="base.group_system"
+              sequence="100"/>
+
+    <!-- Vista para mostrar información de debug de usuarios -->
+    <record id="view_users_tree_inherit_sale_geo_company" model="ir.ui.view">
+        <field name="name">res.users.tree.inherit.geo.company</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <!-- Agregar columna para mostrar número de compañías -->
+            <field name="login" position="after">
+                <field name="company_ids" string="Compañías (#)" 
+                       widget="many2many_tags" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo> 
