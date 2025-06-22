@@ -1,34 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_company_form_inherit_geo" model="ir.ui.view">
-        <field name="name">res.company.form.inherit.geo</field>
-        <field name="model">res.company</field>
-        <field name="inherit_id" ref="base.view_company_form"/>
-        <field name="arch" type="xml">
-            <notebook position="inside">
-                <page name="geo_assignment" string="Asignación Geográfica">
-                    <group>
-                        <group>
-                            <field name="geo_assignment_enabled"/>
-                            <field name="geo_priority" invisible="not geo_assignment_enabled"/>
-                        </group>
-                        <group>
-                        </group>
-                    </group>
-                    <group string="Áreas de Servicio" invisible="not geo_assignment_enabled">
-                        <group>
-                            <field name="geo_country_ids" widget="many2many_tags"/>
-                            <field name="geo_state_ids" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="geo_cities" placeholder="Madrid, Barcelona, Valencia"/>
-                        </group>
-                    </group>
-                </page>
-            </notebook>
-        </field>
-    </record>
-
     <record id="view_company_form_inherit_geo_assignment" model="ir.ui.view">
         <field name="name">res.company.form.inherit.geo.assignment</field>
         <field name="model">res.company</field>
@@ -42,11 +13,6 @@
                             <field name="geo_priority"/>
                         </group>
                         <group>
-                            <button name="test_geographic_assignment" 
-                                    string="🧪 Probar Asignación Geográfica" 
-                                    type="object" 
-                                    class="btn-primary"
-                                    help="Ejecutar prueba de diagnóstico del sistema de asignación geográfica"/>
                         </group>
                     </group>
                     
