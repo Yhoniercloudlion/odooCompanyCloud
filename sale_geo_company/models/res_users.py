@@ -20,19 +20,27 @@ class ResUsers(models.Model):
         return users
 
     def _assign_all_companies_to_user(self, user):
-        """Asignar todas las compañías activas al usuario"""
+        """Asignar todas las compañías activas al usuario preservando la compañía predeterminada"""
         try:
             # Obtener todas las compañías activas
             all_companies = self.env['res.company'].sudo().search([('active', '=', True)])
             
             if all_companies:
-                # Asignar todas las compañías al usuario
+                # Preservar la compañía predeterminada actual del usuario
+                current_company = user.company_id
+                
+                # Si el usuario no tiene compañía predeterminada, usar la primera disponible
+                if not current_company or current_company.id not in all_companies.ids:
+                    current_company = all_companies[0]
+                
+                # Asignar todas las compañías al usuario manteniendo la predeterminada
                 user.sudo().write({
                     'company_ids': [(6, 0, all_companies.ids)],
-                    'company_id': all_companies[0].id  # Compañía principal (primera)
+                    'company_id': current_company.id  # Preservar la compañía predeterminada
                 })
                 
                 _logger.info(f"=== Usuario '{user.name}' ({user.login}) asignado a {len(all_companies)} compañías: {', '.join(all_companies.mapped('name'))}")
+                _logger.info(f"=== Compañía predeterminada preservada: {current_company.name}")
                 
                 # También asignar todas las compañías al partner relacionado
                 if user.partner_id:
@@ -48,15 +56,22 @@ class ResUsers(models.Model):
     def assign_all_companies(self):
         """Método manual para asignar todas las compañías a un usuario existente"""
         self.ensure_one()
+        
+        # Guardar la compañía predeterminada antes de la asignación
+        original_company = self.company_id.name if self.company_id else 'Ninguna'
+        
         self._assign_all_companies_to_user(self)
+        
+        # Obtener la compañía predeterminada después de la asignación
+        final_company = self.company_id.name if self.company_id else 'Ninguna'
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'message': f'Usuario {self.name} asignado a todas las compañías disponibles',
+                'message': f'Usuario {self.name} asignado a todas las compañías.\nCompañía predeterminada: {final_company}',
                 'type': 'success',
-                'sticky': False,
+                'sticky': True,
             }
         }
 

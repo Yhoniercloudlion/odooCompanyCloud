@@ -31,8 +31,6 @@
         'views/res_partner_views.xml',
         'views/sale_order_views.xml',
         'views/res_users_views.xml',
-        'data/manual_data_load.xml',
-        'data/user_access.xml',
     ],
     'demo': [
         'data/demo_companies.xml',
@@ -40,5 +38,5 @@
     ],
     'installable': True,
     'auto_install': False,
-    'application': False,
+    'application': True,
 } 
