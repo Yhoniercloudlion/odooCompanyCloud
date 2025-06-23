@@ -158,21 +158,20 @@ class PortalMultiCompany(PortalAccount, CustomerPortal):
         if not partner or order_sudo.partner_id.commercial_partner_id != partner.commercial_partner_id:
             return request.not_found()
         
-        # Verificar acceso con token si se proporciona
-        if access_token:
-            try:
-                order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-            except Exception as e:
-                _logger.warning(f"=== Fallo verificación de token para pedido {order_id}: {e}")
-                # Continuar con sudo si el partner coincide
-                
+        # Continuar con la lógica estándar pero usando el objeto con sudo
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except:
+            # Si falla el check estándar, usar nuestro sudo si pertenece al partner
+            pass
+            
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=order_sudo, report_type=report_type, 
                                    report_ref='sale.action_report_saleorder', download=download)
 
         values = {
             'sale_order': order_sudo,
-            'object': order_sudo,  # Requerido para el template message_thread
+            'object': order_sudo, 
             'message': message,
             'token': access_token,
             'bootstrap_formatting': True,
@@ -285,13 +284,12 @@ class PortalMultiCompany(PortalAccount, CustomerPortal):
         if not partner or invoice_sudo.partner_id.commercial_partner_id != partner.commercial_partner_id:
             return request.not_found()
         
-        # Verificar acceso con token si se proporciona
-        if access_token:
-            try:
-                invoice_sudo = self._document_check_access('account.move', invoice_id, access_token=access_token)
-            except Exception as e:
-                _logger.warning(f"=== Fallo verificación de token para factura {invoice_id}: {e}")
-                # Continuar con sudo si el partner coincide
+        # Continuar con la lógica estándar pero usando el objeto con sudo
+        try:
+            invoice_sudo = self._document_check_access('account.move', invoice_id, access_token=access_token)
+        except:
+            # Si falla el check estándar, usar nuestro sudo si pertenece al partner
+            pass
 
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=invoice_sudo, report_type=report_type,
