@@ -6,7 +6,7 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <!-- Botones para asignación -->
+            <!-- Botón para asignación -->
             <button name="action_confirm" position="before">
                 <button name="assign_geographic_company" 
                         string="Asignar Compañía por Ubicación" 
@@ -14,18 +14,6 @@
                         class="oe_highlight"
                         invisible="state in ('done', 'cancel')"
                         groups="sales_team.group_sale_salesman"/>
-                <button name="force_geographic_assignment" 
-                        string="🔄 Forzar Reasignación" 
-                        type="object" 
-                        class="btn-warning"
-                        invisible="state in ('done', 'cancel')"
-                        groups="sales_team.group_sale_manager"
-                        help="Fuerza la reasignación geográfica basada en la ubicación actual del cliente"/>
-                <button name="debug_geographic_assignment" 
-                        string="🔍 Debug Asignación" 
-                        type="object" 
-                        class="btn-secondary"
-                        groups="sales_team.group_sale_manager"/>
             </button>
             
             <!-- Información de datos de envío del website -->
