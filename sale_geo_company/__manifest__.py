@@ -27,6 +27,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/portal_multicompany_rules.xml',
         'views/res_company_views.xml',
         'views/res_partner_views.xml',
         'views/sale_order_views.xml',
